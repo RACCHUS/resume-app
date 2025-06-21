@@ -416,12 +416,16 @@ export default function ResumeBuilder() {
             );
           })}
         </div>
-        {/* Remove Add Custom Section Buttons */}
-        {/* <div style={{ marginBottom: 16, display: 'flex', gap: 8 }}>
+        {/* Add Custom Section Buttons */}
+        <div style={{ marginBottom: 16, display: 'flex', gap: 8 }}>
           <button onClick={() => handleAddCustomSection('summary')}>Add Summary Section</button>
           <button onClick={() => handleAddCustomSection('list')}>Add List Section</button>
           <button onClick={() => handleAddCustomSection('combo')}>Add Combo Section</button>
-        </div> */}
+        </div>
+        {/* Render custom section editor if any custom sections exist */}
+        {resume.customSections && resume.customSections.length > 0 && (
+          <CustomSectionComponent customSections={resume.customSections} onChange={handleCustomSectionsChange} />
+        )}
         {/* Drag-and-drop section order */}
         {(() => {
           const visibleSections = filteredSectionOrder.filter(key => sectionVisibility[key]);

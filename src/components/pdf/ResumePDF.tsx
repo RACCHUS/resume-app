@@ -238,14 +238,58 @@ export function ResumePDF({ resume }: { resume: Resume }) {
           if (key.startsWith('customSections-')) {
             const custom = customSectionsMap.get(key);
             if (!custom) return null;
-            const content = typeof custom.content === 'string'
-              ? custom.content
-              : (custom.content ? JSON.stringify(custom.content) : '');
-            if (!custom.name && !content) return null;
+            // Defensive: check type and content
+            const type = custom.type || 'summary';
+            const name = custom.name || '';
+            const content = custom.content;
+            if (!name && !content) return null;
+            let renderedContent: React.ReactNode = null;
+            if (type === 'summary') {
+              renderedContent = <SafeText style={styles.custom}>{typeof content === 'string' ? content : ''}</SafeText>;
+            } else if (type === 'list') {
+              const items = Array.isArray(content) ? content.filter(i => typeof i === 'string' && i.trim()) : [];
+              renderedContent = items.length > 0 ? (
+                <View style={styles.bullets}>
+                  {items.map((item, idx) => (
+                    <SafeText key={idx}>• {item}</SafeText>
+                  ))}
+                </View>
+              ) : null;
+            } else if (type === 'combo') {
+              let summary = '';
+              let items: string[] = [];
+              if (
+                typeof content === 'object' &&
+                content !== null &&
+                !Array.isArray(content) &&
+                'summary' in content &&
+                typeof content.summary === 'string'
+              ) {
+                summary = content.summary;
+                if ('items' in content && Array.isArray((content as any).items)) {
+                  items = (content as any).items.filter((i: any) => typeof i === 'string' && i.trim());
+                }
+              }
+              renderedContent = (
+                <View>
+                  {summary && <SafeText style={styles.custom}>{summary}</SafeText>}
+                  {items.length > 0 && (
+                    <View style={styles.bullets}>
+                      {items.map((item: string, idx: number) => (
+                        <SafeText key={idx}>• {item}</SafeText>
+                      ))}
+                    </View>
+                  )}
+                </View>
+              );
+            } else {
+              // fallback: stringify
+              renderedContent = <SafeText style={styles.custom}>{content ? JSON.stringify(content) : ''}</SafeText>;
+            }
             return (
               <View key={key} style={styles.section}>
-                <SafeText style={styles.header}>{custom.name || ''}</SafeText>
-                <SafeText style={styles.custom}>{content || ''}</SafeText>
+                <SafeText style={styles.header}>{name}</SafeText>
+                {renderedContent}
               </View>
             );
           }
