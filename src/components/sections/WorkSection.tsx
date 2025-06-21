@@ -27,7 +27,11 @@ export default function WorkSection({ work, onChange }: Props) {
   };
 
   const handleRemoveJob = (idx: number) => {
-    onChange(work.filter((_, i) => i !== idx));
+    // Defensive: filter out any null/undefined and ensure all have id
+    const filtered = work
+      .filter((w, i) => i !== idx && w && typeof w === 'object' && w.id)
+      .map(w => ({ ...w }));
+    onChange(filtered);
   };
 
   const handleAddBullet = (idx: number) => {

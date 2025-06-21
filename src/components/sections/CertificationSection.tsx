@@ -27,7 +27,11 @@ export default function CertificationSection({ certifications, onChange }: Props
   };
 
   const handleRemoveCertification = (idx: number) => {
-    onChange(certifications.filter((_, i) => i !== idx));
+    // Defensive: filter out any null/undefined and ensure all have id
+    const filtered = certifications
+      .filter((c, i) => i !== idx && c && typeof c === 'object' && c.id)
+      .map(c => ({ ...c }));
+    onChange(filtered);
   };
 
   const handleAddBullet = (idx: number) => {

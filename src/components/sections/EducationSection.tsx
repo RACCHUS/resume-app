@@ -27,7 +27,11 @@ export default function EducationSection({ education, onChange }: Props) {
   };
 
   const handleRemoveEducation = (idx: number) => {
-    onChange(education.filter((_, i) => i !== idx));
+    // Defensive: filter out any null/undefined and ensure all have id
+    const filtered = education
+      .filter((e, i) => i !== idx && e && typeof e === 'object' && e.id)
+      .map(e => ({ ...e }));
+    onChange(filtered);
   };
 
   const handleAddBullet = (idx: number) => {

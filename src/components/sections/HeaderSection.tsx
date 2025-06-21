@@ -26,7 +26,6 @@ export default function HeaderSection({ header, onChange }: Props) {
 
   return (
     <section style={{ marginBottom: 24 }}>
-      <h3>Header</h3>
       <input
         type="text"
         value={header.name}

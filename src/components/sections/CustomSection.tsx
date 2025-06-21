@@ -34,7 +34,11 @@ export default function CustomSectionComponent({ customSections, onChange }: Pro
   };
 
   const handleRemoveSection = (idx: number) => {
-    safeOnChange(customSections.filter((_, i) => i !== idx));
+    // Defensive: filter out any null/undefined and ensure all have id
+    const filtered = customSections
+      .filter((s, i) => i !== idx && s && typeof s === 'object' && s.id)
+      .map(s => ({ ...s }));
+    safeOnChange(filtered);
   };
 
   return (

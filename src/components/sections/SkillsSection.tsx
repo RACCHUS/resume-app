@@ -16,7 +16,11 @@ export default function SkillsSection({ skills, onChange }: Props) {
   };
 
   const handleRemoveSkill = (idx: number) => {
-    onChange(skills.filter((_, i) => i !== idx));
+    // Defensive: filter out any null/undefined and ensure all are non-empty strings
+    const filtered = skills
+      .filter((s, i) => i !== idx && typeof s === 'string' && s.trim())
+      .map(s => s.trim());
+    onChange(filtered);
   };
 
   return (

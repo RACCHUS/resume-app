@@ -106,12 +106,14 @@ function getAllSectionKeys(resume: Resume): string[] {
     'certifications',
     'skills',
   ];
-  const customKeys = resume.customSections.map(cs => `customSections-${cs.id}`);
+  const customKeys = (resume.customSections || [])
+    .filter(cs => cs && cs.id)
+    .map(cs => `customSections-${cs.id}`);
   return [...staticKeys, ...customKeys];
 }
 
 // Utility: get valid section keys from resume data
-function getValidSectionKeys(resume: Resume) {
+function getValidSectionKeys(resume: Resume): string[] {
   const staticKeys = [
     'header',
     'summary',
@@ -120,9 +122,9 @@ function getValidSectionKeys(resume: Resume) {
     'certifications',
     'skills',
   ];
-  const customKeys = Array.isArray(resume.customSections)
-    ? resume.customSections.map(cs => `customSections-${cs.id}`)
-    : [];
+  const customKeys = (resume.customSections || [])
+    .filter(cs => cs && cs.id)
+    .map(cs => `customSections-${cs.id}`);
   return [...staticKeys, ...customKeys];
 }
 
@@ -174,13 +176,20 @@ export default function ResumeBuilder() {
   useEffect(() => {
     if (profile && !hasLoadedProfile.current) {
       setResume(profile);
+      const validKeysFromProfile = getValidSectionKeys(profile);
       if (profile.sectionOrder && Array.isArray(profile.sectionOrder)) {
-        setSectionOrder(profile.sectionOrder);
+        setSectionOrder(profile.sectionOrder.filter(key => validKeysFromProfile.includes(key)));
       } else {
-        setSectionOrder(getAllSectionKeys(profile));
+        setSectionOrder(validKeysFromProfile);
       }
       if (profile.sectionVisibility) {
-        setSectionVisibility(profile.sectionVisibility as Partial<Record<string, boolean>>);
+        const filteredVisibility = Object.keys(profile.sectionVisibility).reduce((acc, key) => {
+          if (validKeysFromProfile.includes(key) && profile.sectionVisibility && profile.sectionVisibility[key] !== undefined) {
+            acc[key] = profile.sectionVisibility[key];
+          }
+          return acc;
+        }, {} as Partial<Record<string, boolean>>);
+        setSectionVisibility(filteredVisibility);
       } else {
         setSectionVisibility(defaultSectionVisibility);
       }
@@ -223,10 +232,25 @@ export default function ResumeBuilder() {
     pushHistory();
     setResume(r => ({ ...r, customSections }));
     setSectionOrder(order => {
-      // Remove any customSections-* keys not in customSections
       const customKeys = customSections.map(cs => `customSections-${cs.id}`);
-      const staticKeys = order.filter(key => !key.startsWith('customSections-'));
-      return [...staticKeys, ...customKeys];
+      const combinedKeys = [...defaultSectionOrder, ...customKeys];
+      // Remove deleted custom section keys from order
+      return order.filter(key => combinedKeys.includes(key));
+    });
+    setSectionVisibility(v => {
+      const newVisibility = { ...v };
+      Object.keys(newVisibility).forEach(key => {
+        if (key.startsWith('customSections-') && !customSections.some(cs => `customSections-${cs.id}` === key)) {
+          delete newVisibility[key];
+        }
+      });
+      customSections.forEach(cs => {
+        const key = `customSections-${cs.id}`;
+        if (newVisibility[key] === undefined) {
+          newVisibility[key] = true;
+        }
+      });
+      return newVisibility;
     });
   };
   const handleToggleSection = (key: SectionKey) => {
@@ -304,30 +328,6 @@ export default function ResumeBuilder() {
       case 'skills':
         return <SkillsSection skills={resume.skills} onChange={handleSkillsChange} />;
       default:
-        if (key.startsWith('customSections-')) {
-          const id = key.replace('customSections-', '');
-          const sectionIdx = resume.customSections.findIndex(cs => cs.id === id);
-          if (sectionIdx === -1) return null;
-          // Render only this custom section, but pass the full array and onChange for add/remove
-          return (
-            <CustomSectionComponent
-              customSections={[resume.customSections[sectionIdx]]}
-              onChange={updatedSections => {
-                setResume(r => {
-                  const newCustomSections = [...r.customSections];
-                  if (updatedSections.length === 0) {
-                    // Section was deleted
-                    newCustomSections.splice(sectionIdx, 1);
-                    setSectionOrder(order => order.filter(k => k !== key));
-                  } else {
-                    newCustomSections[sectionIdx] = updatedSections[0];
-                  }
-                  return { ...r, customSections: newCustomSections };
-                });
-              }}
-            />
-          );
-        }
         return null;
     }
   };
@@ -416,12 +416,12 @@ export default function ResumeBuilder() {
             );
           })}
         </div>
-        {/* Add Custom Section Buttons */}
-        <div style={{ marginBottom: 16, display: 'flex', gap: 8 }}>
+        {/* Remove Add Custom Section Buttons */}
+        {/* <div style={{ marginBottom: 16, display: 'flex', gap: 8 }}>
           <button onClick={() => handleAddCustomSection('summary')}>Add Summary Section</button>
           <button onClick={() => handleAddCustomSection('list')}>Add List Section</button>
           <button onClick={() => handleAddCustomSection('combo')}>Add Combo Section</button>
-        </div>
+        </div> */}
         {/* Drag-and-drop section order */}
         {(() => {
           const visibleSections = filteredSectionOrder.filter(key => sectionVisibility[key]);
@@ -448,7 +448,11 @@ export default function ResumeBuilder() {
       </div>
       <div style={{ flex: 1, minWidth: 350, maxWidth: 600, height: 900, border: '1px solid #eee', borderRadius: 8, background: '#fff', overflow: 'hidden' }}>
         <PDFErrorBoundary>
-          <PDFViewer width="100%" height="100%">
+          <PDFViewer
+            key={JSON.stringify({ sectionOrder, sectionVisibility, resume })}
+            width="100%"
+            height="100%"
+          >
             <ResumePDF resume={{ ...resume, sectionOrder, sectionVisibility }} />
           </PDFViewer>
         </PDFErrorBoundary>
