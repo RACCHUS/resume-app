@@ -314,6 +314,24 @@ export default function ResumeBuilder() {
 
   // Section renderers as a function
   const renderSectionComponent = (key: string) => {
+    if (key.startsWith('customSections-')) {
+      const id = key.replace('customSections-', '');
+      const section = resume.customSections.find(cs => cs.id === id);
+      if (!section) return null;
+      // Render a CustomSectionComponent for just this section
+      return (
+        <CustomSectionComponent
+          customSections={[section]}
+          onChange={updatedSections => {
+            // Only one section, so update that one in the array
+            const updated = resume.customSections.map(cs =>
+              cs.id === id ? { ...cs, ...updatedSections[0] } : cs
+            );
+            handleCustomSectionsChange(updated);
+          }}
+        />
+      );
+    }
     switch (key) {
       case 'header':
         return <HeaderSectionComponent header={resume.header} onChange={handleHeaderChange} />;
@@ -422,10 +440,6 @@ export default function ResumeBuilder() {
           <button onClick={() => handleAddCustomSection('list')}>Add List Section</button>
           <button onClick={() => handleAddCustomSection('combo')}>Add Combo Section</button>
         </div>
-        {/* Render custom section editor if any custom sections exist */}
-        {resume.customSections && resume.customSections.length > 0 && (
-          <CustomSectionComponent customSections={resume.customSections} onChange={handleCustomSectionsChange} />
-        )}
         {/* Drag-and-drop section order */}
         {(() => {
           const visibleSections = filteredSectionOrder.filter(key => sectionVisibility[key]);
