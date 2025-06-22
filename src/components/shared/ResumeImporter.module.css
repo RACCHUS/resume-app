@@ -1,0 +1,70 @@
+.importerContainer {
+  margin-bottom: 24px;
+  background: var(--color-bg-secondary);
+  padding: 16px;
+  border-radius: 8px;
+  color: var(--color-text);
+}
+
+.importerContainer h3 {
+  margin-top: 0;
+  color: var(--color-header);
+}
+
+.importerInput,
+.importerTextarea {
+  width: 100%;
+  margin-bottom: 8px;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  background: var(--color-input-bg);
+  color: var(--color-text);
+  padding: 8px;
+  font-size: 15px;
+  transition: border 0.2s;
+}
+
+.importerInput:focus,
+.importerTextarea:focus {
+  outline: none;
+  border: 1.5px solid var(--color-accent);
+}
+
+.importerButton {
+  background: var(--color-accent);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  margin-bottom: 8px;
+  margin-right: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.importerButton:disabled {
+  background: var(--color-border);
+  color: var(--color-text-secondary);
+  cursor: not-allowed;
+}
+
+.importerButton:hover:not(:disabled) {
+  background: var(--color-accent-hover);
+}
+
+.importerError {
+  color: var(--color-error);
+  margin-top: 4px;
+}
+
+.importerHelper {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-top: 8px;
+}
+
+.importerLoading {
+  color: var(--color-accent);
+  margin-bottom: 8px;
+}

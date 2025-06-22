@@ -82,20 +82,6 @@ function SortableSection({ id, children }: { id: string; children: React.ReactNo
   );
 }
 
-// Helper to check if resume is empty
-function isResumeEmpty(resume: Resume) {
-  return (
-    !resume.header.name &&
-    resume.header.contactInfo.length === 0 &&
-    !resume.summary &&
-    resume.work.length === 0 &&
-    resume.education.length === 0 &&
-    resume.certifications.length === 0 &&
-    resume.skills.length === 0 &&
-    resume.customSections.length === 0
-  );
-}
-
 // Helper: get all section keys (static + custom)
 function getAllSectionKeys(resume: Resume): string[] {
   const staticKeys = [
@@ -149,7 +135,7 @@ class PDFErrorBoundary extends React.Component<{ children: React.ReactNode }, { 
   }
 }
 
-export default function ResumeBuilder() {
+export default function ResumeBuilder({ dark = true }: { dark?: boolean }) {
   const { user, loading: authLoading } = useAuth();
   const { profile, loading: profileLoading, saveProfile } = useUserProfile(user);
   const [resume, setResume] = useState<Resume>(defaultResume);
@@ -377,7 +363,7 @@ export default function ResumeBuilder() {
   console.log('resume:', resume);
 
   return (
-    <div style={{ padding: 32, maxWidth: 1200, margin: '0 auto', display: 'flex', gap: 32, flexWrap: 'wrap' }}>
+    <div className={dark ? 'dark' : ''} style={{ padding: 32, maxWidth: 1200, margin: '0 auto', display: 'flex', gap: 32, flexWrap: 'wrap', background: 'var(--secondary-color)', color: 'var(--text-color)' }}>
       <div style={{ flex: 1, minWidth: 350, maxWidth: 700 }}>
         <h2>Resume Builder</h2>
         <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
@@ -388,13 +374,13 @@ export default function ResumeBuilder() {
         </div>
         <ResumeImporter onImport={handleImport} />
         {/* Optimize Resume for Job Description */}
-        <div style={{ marginBottom: 24, background: '#f5f6fa', padding: 16, borderRadius: 8 }}>
+        <div style={{ marginBottom: 24, background: 'var(--card-bg)', padding: 16, borderRadius: 8 }}>
           <h3>Optimize Resume for Job Description</h3>
           <textarea
             value={jobDescription}
             onChange={e => setJobDescription(e.target.value)}
             placeholder="Paste the job description here..."
-            style={{ width: '100%', minHeight: 80, marginBottom: 8 }}
+            style={{ width: '100%', minHeight: 80, marginBottom: 8, background: 'var(--input-bg)', color: 'var(--text-color)', border: '1px solid var(--input-border)' }}
           />
           <button onClick={handleGenerateOptimizationPrompt} style={{ marginBottom: 8 }}>Generate Optimization Prompt</button>
           {showOptimizationPrompt && (
@@ -402,7 +388,7 @@ export default function ResumeBuilder() {
               <textarea
                 value={optimizationPrompt}
                 readOnly
-                style={{ width: '100%', minHeight: 120, fontSize: 13, marginBottom: 4 }}
+                style={{ width: '100%', minHeight: 120, fontSize: 13, marginBottom: 4, background: 'var(--input-bg)', color: 'var(--text-color)', border: '1px solid var(--input-border)' }}
               />
               <button onClick={handleCopyOptimizationPrompt} style={{ marginRight: 8 }}>{copiedOptimization ? 'Copied!' : 'Copy Prompt'}</button>
             </div>
@@ -462,6 +448,7 @@ export default function ResumeBuilder() {
           );
         })()}
       </div>
+      {/* PDF Preview: always light mode */}
       <div style={{ flex: 1, minWidth: 350, maxWidth: 600, height: 900, border: '1px solid #eee', borderRadius: 8, background: '#fff', overflow: 'hidden' }}>
         <PDFErrorBoundary>
           <PDFViewer

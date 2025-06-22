@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { getResumeImportPrompt } from '../../lib/promptGenerator';
 // @ts-ignore
 import * as pdfjsLib from 'pdfjs-dist/build/pdf';
+import styles from './ResumeImporter.module.css';
 pdfjsLib.GlobalWorkerOptions.workerSrc = `${process.env.PUBLIC_URL}/pdf.worker.min.js`;
 
 export default function ResumeImporter({ onImport }: { onImport: (json: any) => void }) {
@@ -70,36 +71,46 @@ export default function ResumeImporter({ onImport }: { onImport: (json: any) => 
   };
 
   return (
-    <div style={{ marginBottom: 24, background: '#f5f6fa', padding: 16, borderRadius: 8 }}>
+    <div className={styles.importerContainer}>
       <h3>Import Resume (from ChatGPT.com, LinkedIn, Indeed, etc.)</h3>
-      <input type="file" accept=".txt,.pdf,.doc,.docx" onChange={handleFileUpload} style={{ marginBottom: 8 }} />
-      {loading && <div style={{ color: '#2d6cdf', marginBottom: 8 }}>Extracting text from PDF...</div>}
+      <input
+        type="file"
+        accept=".txt,.pdf,.doc,.docx"
+        onChange={handleFileUpload}
+        className={styles.importerInput}
+      />
+      {loading && <div className={styles.importerLoading}>Extracting text from PDF...</div>}
       <textarea
         value={resumeText}
         onChange={e => setResumeText(e.target.value)}
         placeholder="Paste your resume text here or upload a file above..."
-        style={{ width: '100%', minHeight: 80, marginBottom: 8 }}
+        className={styles.importerTextarea}
+        style={{ minHeight: 80 }}
       />
-      <button onClick={handleGeneratePrompt} style={{ marginBottom: 8 }}>Generate ChatGPT Prompt</button>
+      <button onClick={handleGeneratePrompt} className={styles.importerButton}>Generate ChatGPT Prompt</button>
       {showPrompt && (
-        <div style={{ marginBottom: 8 }}>
+        <div>
           <textarea
             value={generatedPrompt}
             readOnly
-            style={{ width: '100%', minHeight: 120, fontSize: 13, marginBottom: 4 }}
+            className={styles.importerTextarea}
+            style={{ minHeight: 120, fontSize: 13, marginBottom: 4 }}
           />
-          <button onClick={handleCopyPrompt} style={{ marginRight: 8 }}>{copied ? 'Copied!' : 'Copy Prompt'}</button>
+          <button onClick={handleCopyPrompt} className={styles.importerButton}>
+            {copied ? 'Copied!' : 'Copy Prompt'}
+          </button>
         </div>
       )}
       <textarea
         value={input}
         onChange={e => setInput(e.target.value)}
         placeholder="Paste JSON output from ChatGPT.com here..."
-        style={{ width: '100%', minHeight: 80, marginBottom: 8 }}
+        className={styles.importerTextarea}
+        style={{ minHeight: 80 }}
       />
-      <button onClick={handleImport} style={{ marginRight: 8 }}>Import Resume</button>
-      {error && <div style={{ color: 'red', marginTop: 4 }}>{error}</div>}
-      <div style={{ fontSize: 13, color: '#666', marginTop: 8 }}>
+      <button onClick={handleImport} className={styles.importerButton}>Import Resume</button>
+      {error && <div className={styles.importerError}>{error}</div>}
+      <div className={styles.importerHelper}>
         1. Upload or paste your resume.<br />
         2. Click Generate ChatGPT Prompt.<br />
         3. Copy the prompt and paste it into ChatGPT.com.<br />

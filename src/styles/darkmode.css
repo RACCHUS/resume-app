@@ -1,0 +1,47 @@
+:root {
+  --primary-color: #2d6cdf;
+  --secondary-color: #f5f6fa;
+  --text-color: #222;
+  --card-bg: #fff;
+  --input-bg: #fafbfc;
+  --input-border: #d0d0d0;
+  --input-focus: #0078d4;
+  --danger: #d32f2f;
+}
+
+.dark {
+  --primary-color: #90caf9;
+  --secondary-color: #181a1b;
+  --text-color: #f5f6fa;
+  --card-bg: #23272f;
+  --input-bg: #23272f;
+  --input-border: #333a44;
+  --input-focus: #90caf9;
+  --danger: #ff6b6b;
+  background: var(--secondary-color);
+  color: var(--text-color);
+}
+
+.dark, .dark input, .dark textarea, .dark select {
+  color: var(--text-color) !important;
+  background: var(--input-bg) !important;
+  border-color: var(--input-border) !important;
+}
+
+.dark .card, .dark .section, .dark .resume-section {
+  background: var(--card-bg) !important;
+  color: var(--text-color) !important;
+}
+
+.dark button {
+  background: var(--primary-color) !important;
+  color: #fff !important;
+}
+
+.dark .deleteBtn, .dark .removeBtn {
+  color: var(--danger) !important;
+}
+
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+  color: var(--text-color) !important;
+}

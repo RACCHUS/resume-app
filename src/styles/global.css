@@ -1,7 +1,11 @@
+@import './darkmode.css';
+
 body {
   font-family: var(--font-family);
   background: var(--secondary-color);
+  color: var(--text-color);
   margin: 0;
   padding: 0;
   min-height: 100vh;
+  transition: background 0.3s, color 0.3s;
 }
