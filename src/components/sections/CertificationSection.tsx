@@ -1,5 +1,6 @@
 import React from 'react';
 import { CertificationSection as CertificationSectionType } from '../../types/resume';
+import styles from './CertificationSection.module.css';
 
 type Props = {
   certifications: CertificationSectionType[];
@@ -49,52 +50,52 @@ export default function CertificationSection({ certifications, onChange }: Props
   };
 
   return (
-    <section style={{ marginBottom: 24 }}>
-      <h3>Certifications</h3>
+    <section className={styles.section}>
+      <h3 className={styles.sectionTitle}>Certifications</h3>
       {certifications.map((c, idx) => (
-        <div key={c.id} style={{ border: '1px solid #eee', borderRadius: 8, padding: 12, marginBottom: 12 }}>
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
+        <div key={c.id} className={styles.certCard}>
+          <div className={styles.certInputs}>
             <input
               type="text"
               value={c.certification}
               onChange={ev => handleFieldChange(idx, 'certification', ev.target.value)}
               placeholder="Certification"
-              style={{ flex: 1, minWidth: 120 }}
+              className={styles.input}
             />
             <input
               type="text"
               value={c.school}
               onChange={ev => handleFieldChange(idx, 'school', ev.target.value)}
               placeholder="School"
-              style={{ flex: 1, minWidth: 120 }}
+              className={styles.input}
             />
             <input
               type="text"
               value={c.date}
               onChange={ev => handleFieldChange(idx, 'date', ev.target.value)}
               placeholder="Date"
-              style={{ flex: 1, minWidth: 100 }}
+              className={styles.input}
             />
-            <button onClick={() => handleRemoveCertification(idx)} style={{ color: 'red' }}>Delete</button>
+            <button onClick={() => handleRemoveCertification(idx)} className={styles.deleteBtn}>Delete</button>
           </div>
-          <ul style={{ paddingLeft: 20 }}>
+          <ul className={styles.bulletList}>
             {c.bullets.map((b, bulletIdx) => (
-              <li key={bulletIdx} style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 4 }}>
+              <li key={bulletIdx} className={styles.bulletItem}>
                 <input
                   type="text"
                   value={b}
                   onChange={ev => handleBulletChange(idx, bulletIdx, ev.target.value)}
                   placeholder="Detail or achievement"
-                  style={{ flex: 1 }}
+                  className={styles.bulletInput}
                 />
-                <button onClick={() => handleRemoveBullet(idx, bulletIdx)} style={{ color: 'red' }}>Remove</button>
+                <button onClick={() => handleRemoveBullet(idx, bulletIdx)} className={styles.deleteBtn}>Remove</button>
               </li>
             ))}
           </ul>
-          <button onClick={() => handleAddBullet(idx)} style={{ marginTop: 4 }}>Add Bullet</button>
+          <button onClick={() => handleAddBullet(idx)} className={styles.addBtn}>Add Bullet</button>
         </div>
       ))}
-      <button onClick={handleAddCertification} style={{ marginTop: 8 }}>Add Certification</button>
+      <button onClick={handleAddCertification} className={styles.addBtn}>Add Certification</button>
     </section>
   );
 }

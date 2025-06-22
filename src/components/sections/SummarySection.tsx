@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './SummarySection.module.css';
 
 type Props = {
   summary: string;
@@ -7,13 +8,13 @@ type Props = {
 
 export default function SummarySection({ summary, onChange }: Props) {
   return (
-    <section style={{ marginBottom: 24 }}>
-      <h3>Summary</h3>
+    <section className={styles.summarySection}>
+      <h3 className={styles.heading}>Summary</h3>
       <textarea
+        className={styles.textarea}
         value={typeof summary === 'string' ? summary : ''}
         onChange={e => onChange(e.target.value)}
         placeholder="Write a brief professional summary..."
-        style={{ width: '100%', minHeight: 60, fontSize: 16, borderRadius: 6, padding: 8 }}
       />
     </section>
   );

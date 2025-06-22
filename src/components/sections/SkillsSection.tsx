@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './SkillsSection.module.css';
 
 type Props = {
   skills: string[];
@@ -24,30 +25,23 @@ export default function SkillsSection({ skills, onChange }: Props) {
   };
 
   return (
-    <section style={{ marginBottom: 24 }}>
-      <h3>Skills</h3>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+    <section className={styles.section}>
+      <h2 className={styles.sectionHeader}>Skills</h2>
+      <ul className={styles.skillList}>
         {skills.map((skill, idx) => (
-          <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <li key={idx} className={styles.skillItem}>
             <input
               type="text"
               value={skill}
               onChange={e => handleSkillChange(idx, e.target.value)}
               placeholder="Skill"
-              style={{ width: 120 }}
+              className={styles.input}
             />
-            <button onClick={() => handleRemoveSkill(idx)} style={{ color: 'red' }}>Remove</button>
-          </div>
+            <button onClick={() => handleRemoveSkill(idx)} className={styles.deleteBtn}>Remove</button>
+          </li>
         ))}
-        <button onClick={handleAddSkill} style={{ marginLeft: 8 }}>Add Skill</button>
-      </div>
-      <div style={{ marginTop: 8, display: 'flex', flexWrap: 'wrap', gap: 16 }}>
-        {skills.map((skill, idx) => (
-          <span key={idx} style={{ background: '#e3e9f6', borderRadius: 6, padding: '4px 12px', marginBottom: 4, fontSize: 15 }}>
-            {skill}
-          </span>
-        ))}
-      </div>
+      </ul>
+      <button onClick={handleAddSkill} className={styles.addBtn}>Add Skill</button>
     </section>
   );
 }

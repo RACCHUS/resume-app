@@ -1,5 +1,6 @@
 import React from 'react';
 import { CustomSection } from '../../types/resume';
+import styles from './CustomSection.module.css';
 
 type Props = {
   customSections: CustomSection[];
@@ -42,21 +43,21 @@ export default function CustomSectionComponent({ customSections, onChange }: Pro
   };
 
   return (
-    <section style={{ marginBottom: 24 }}>
+    <section className={styles.section}>
       <h3>Custom Sections</h3>
       {customSections.map((section, idx) => (
-        <div key={section.id} style={{ border: '1px solid #eee', borderRadius: 8, padding: 12, marginBottom: 12 }}>
+        <div key={section.id} className={styles.sectionContainer}>
           <input
             type="text"
             value={section.name}
             onChange={e => handleNameChange(idx, e.target.value)}
             placeholder="Section Name"
-            style={{ fontWeight: 600, fontSize: 16, marginBottom: 8, width: '100%' }}
+            className={styles.nameInput}
           />
           <select
             value={section.type}
             onChange={e => handleTypeChange(idx, e.target.value as CustomSection['type'])}
-            style={{ marginBottom: 8 }}
+            className={styles.typeSelect}
           >
             <option value="summary">Summary</option>
             <option value="list">List</option>
@@ -67,13 +68,13 @@ export default function CustomSectionComponent({ customSections, onChange }: Pro
               value={typeof section.content === 'string' ? section.content : ''}
               onChange={e => handleContentChange(idx, e.target.value)}
               placeholder="Summary content..."
-              style={{ width: '100%', minHeight: 40, marginBottom: 8 }}
+              className={styles.summaryTextarea}
             />
           )}
           {section.type === 'list' && (
-            <div style={{ marginBottom: 8 }}>
+            <div className={styles.listContainer}>
               {(Array.isArray(section.content) ? section.content : []).map((item, i) => (
-                <div key={i} style={{ display: 'flex', gap: 4, marginBottom: 4 }}>
+                <div key={i} className={styles.listItem}>
                   <input
                     type="text"
                     value={item}
@@ -83,23 +84,24 @@ export default function CustomSectionComponent({ customSections, onChange }: Pro
                       handleContentChange(idx, arr);
                     }}
                     placeholder="List item"
+                    className={styles.listInput}
                   />
                   <button onClick={() => {
                     const arr = Array.isArray(section.content) ? [...section.content] : [];
                     arr.splice(i, 1);
                     handleContentChange(idx, arr);
-                  }} style={{ color: 'red' }}>Remove</button>
+                  }} className={styles.removeButton}>Remove</button>
                 </div>
               ))}
               <button onClick={() => {
                 const arr = Array.isArray(section.content) ? [...section.content] : [];
                 arr.push('');
                 handleContentChange(idx, arr);
-              }}>Add Item</button>
+              }} className={styles.addItemButton}>Add Item</button>
             </div>
           )}
           {section.type === 'combo' && (
-            <div style={{ marginBottom: 8 }}>
+            <div className={styles.comboContainer}>
               <textarea
                 value={
                   typeof section.content === 'object' && !Array.isArray(section.content) && section.content !== null && 'summary' in section.content
@@ -118,14 +120,14 @@ export default function CustomSectionComponent({ customSections, onChange }: Pro
                   handleContentChange(idx, content);
                 }}
                 placeholder="Combo summary..."
-                style={{ width: '100%', minHeight: 40, marginBottom: 8 }}
+                className={styles.comboSummaryTextarea}
               />
               {(
                 typeof section.content === 'object' && !Array.isArray(section.content) && section.content !== null && Array.isArray(section.content.items)
                   ? section.content.items
                   : []
               ).map((item: string, i: number) => (
-                <div key={i} style={{ display: 'flex', gap: 4, marginBottom: 4 }}>
+                <div key={i} className={styles.comboItem}>
                   <input
                     type="text"
                     value={item}
@@ -147,6 +149,7 @@ export default function CustomSectionComponent({ customSections, onChange }: Pro
                       handleContentChange(idx, content);
                     }}
                     placeholder="List item"
+                    className={styles.comboInput}
                   />
                   <button onClick={() => {
                     let arr = [] as string[];
@@ -164,7 +167,7 @@ export default function CustomSectionComponent({ customSections, onChange }: Pro
                       content.items = arr;
                     }
                     handleContentChange(idx, content);
-                  }} style={{ color: 'red' }}>Remove</button>
+                  }} className={styles.removeButton}>Remove</button>
                 </div>
               ))}
               <button onClick={() => {
@@ -183,13 +186,12 @@ export default function CustomSectionComponent({ customSections, onChange }: Pro
                   content.items = arr;
                 }
                 handleContentChange(idx, content);
-              }}>Add Item</button>
+              }} className={styles.addItemButton}>Add Item</button>
             </div>
           )}
-          <button onClick={() => handleRemoveSection(idx)} style={{ color: 'red' }}>Delete Section</button>
+          <button onClick={() => handleRemoveSection(idx)} className={styles.deleteButton}>Delete Section</button>
         </div>
       ))}
-      <button onClick={handleAddSection} style={{ marginTop: 8 }}>Add Custom Section</button>
     </section>
   );
 }

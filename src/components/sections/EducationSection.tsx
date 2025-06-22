@@ -1,5 +1,6 @@
 import React from 'react';
 import { EducationSection as EducationSectionType } from '../../types/resume';
+import styles from './EducationSection.module.css';
 
 type Props = {
   education: EducationSectionType[];
@@ -49,52 +50,52 @@ export default function EducationSection({ education, onChange }: Props) {
   };
 
   return (
-    <section style={{ marginBottom: 24 }}>
-      <h3>Education</h3>
+    <section className={styles.section}>
+      <h3 className={styles.heading}>Education</h3>
       {education.map((e, idx) => (
-        <div key={e.id} style={{ border: '1px solid #eee', borderRadius: 8, padding: 12, marginBottom: 12 }}>
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
+        <div key={e.id} className={styles.educationItem}>
+          <div className={styles.educationFields}>
             <input
               type="text"
               value={e.degree}
               onChange={ev => handleFieldChange(idx, 'degree', ev.target.value)}
               placeholder="Degree"
-              style={{ flex: 1, minWidth: 120 }}
+              className={styles.input}
             />
             <input
               type="text"
               value={e.school}
               onChange={ev => handleFieldChange(idx, 'school', ev.target.value)}
               placeholder="School"
-              style={{ flex: 1, minWidth: 120 }}
+              className={styles.input}
             />
             <input
               type="text"
               value={e.date}
               onChange={ev => handleFieldChange(idx, 'date', ev.target.value)}
               placeholder="Date"
-              style={{ flex: 1, minWidth: 100 }}
+              className={styles.input}
             />
-            <button onClick={() => handleRemoveEducation(idx)} style={{ color: 'red' }}>Delete</button>
+            <button onClick={() => handleRemoveEducation(idx)} className={styles.deleteBtn}>Delete</button>
           </div>
-          <ul style={{ paddingLeft: 20 }}>
+          <ul className={styles.bulletsList}>
             {e.bullets.map((b, bulletIdx) => (
-              <li key={bulletIdx} style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 4 }}>
+              <li key={bulletIdx} className={styles.bulletItem}>
                 <input
                   type="text"
                   value={b}
                   onChange={ev => handleBulletChange(idx, bulletIdx, ev.target.value)}
                   placeholder="Detail or achievement"
-                  style={{ flex: 1 }}
+                  className={styles.input}
                 />
-                <button onClick={() => handleRemoveBullet(idx, bulletIdx)} style={{ color: 'red' }}>Remove</button>
+                <button onClick={() => handleRemoveBullet(idx, bulletIdx)} className={styles.removeBulletBtn}>Remove</button>
               </li>
             ))}
           </ul>
-          <button onClick={() => handleAddBullet(idx)} style={{ marginTop: 4 }}>Add Bullet</button>
+          <button onClick={() => handleAddBullet(idx)} className={styles.addBulletBtn}>Add Bullet</button>
         </div>
       ))}
-      <button onClick={handleAddEducation} style={{ marginTop: 8 }}>Add Education</button>
+      <button onClick={handleAddEducation} className={styles.addBtn}>Add Education</button>
     </section>
   );
 }

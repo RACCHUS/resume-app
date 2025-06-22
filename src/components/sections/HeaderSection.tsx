@@ -1,5 +1,6 @@
 import React from 'react';
 import { Resume, HeaderSection as HeaderSectionType } from '../../types/resume';
+import styles from './HeaderSection.module.css';
 
 type Props = {
   header: HeaderSectionType;
@@ -25,17 +26,18 @@ export default function HeaderSection({ header, onChange }: Props) {
   };
 
   return (
-    <section style={{ marginBottom: 24 }}>
+    <section className={styles.section}>
+      {/* Save/Export buttons are now handled by the parent, not here */}
       <input
         type="text"
         value={header.name}
         onChange={handleNameChange}
         placeholder="Full Name"
-        style={{ fontSize: 20, fontWeight: 600, width: '100%', marginBottom: 8 }}
+        className={styles.nameInput}
       />
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+      <div>
         {header.contactInfo.map((c, idx) => (
-          <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <div key={idx} className={styles.contactRow}>
             <input
               type="text"
               value={c.type}
@@ -44,19 +46,19 @@ export default function HeaderSection({ header, onChange }: Props) {
                 onChange({ ...header, contactInfo: updated });
               }}
               placeholder="Type (e.g. Email)"
-              style={{ width: 90 }}
+              className={styles.contactTypeInput}
             />
             <input
               type="text"
               value={c.value}
               onChange={e => handleContactChange(idx, e.target.value)}
               placeholder="Value"
-              style={{ width: 160 }}
+              className={styles.contactValueInput}
             />
-            <button onClick={() => handleRemoveContact(idx)} style={{ color: 'red' }}>Remove</button>
+            <button onClick={() => handleRemoveContact(idx)} className={styles.removeBtn}>Remove</button>
           </div>
         ))}
-        <button onClick={handleAddContact} style={{ marginLeft: 8 }}>Add Contact</button>
+        <button onClick={handleAddContact} className={styles.addBtn}>Add Contact</button>
       </div>
     </section>
   );

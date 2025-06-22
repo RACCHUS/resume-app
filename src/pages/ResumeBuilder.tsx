@@ -383,6 +383,8 @@ export default function ResumeBuilder() {
         <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
           <button onClick={handleUndo} disabled={history.length === 0}>Undo</button>
           <button onClick={handleRedo} disabled={future.length === 0}>Redo</button>
+          <button onClick={handleSave}>Save Resume</button>
+          <button onClick={() => import('../lib/pdfExporter').then(m => m.exportResumeToPDF({ ...resume, sectionOrder, sectionVisibility }))}>Export as PDF</button>
         </div>
         <ResumeImporter onImport={handleImport} />
         {/* Optimize Resume for Job Description */}
@@ -459,10 +461,6 @@ export default function ResumeBuilder() {
             </DndContext>
           );
         })()}
-        <button onClick={handleSave} style={{ marginTop: 16 }}>Save Resume</button>
-        <button onClick={() => import('../lib/pdfExporter').then(m => m.exportResumeToPDF({ ...resume, sectionOrder, sectionVisibility }))} style={{ marginTop: 16, marginLeft: 8 }}>
-          Export as PDF
-        </button>
       </div>
       <div style={{ flex: 1, minWidth: 350, maxWidth: 600, height: 900, border: '1px solid #eee', borderRadius: 8, background: '#fff', overflow: 'hidden' }}>
         <PDFErrorBoundary>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { WorkSection as WorkSectionType } from '../../types/resume';
+import styles from './WorkSection.module.css';
 
 type Props = {
   work: WorkSectionType[];
@@ -49,52 +50,52 @@ export default function WorkSection({ work, onChange }: Props) {
   };
 
   return (
-    <section style={{ marginBottom: 24 }}>
+    <section className={styles.workSection}>
       <h3>Work Experience</h3>
       {work.map((w, idx) => (
-        <div key={w.id} style={{ border: '1px solid #eee', borderRadius: 8, padding: 12, marginBottom: 12 }}>
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
+        <div key={w.id} className={styles.workItem}>
+          <div className={styles.workHeader}>
             <input
               type="text"
               value={w.jobTitle}
               onChange={e => handleFieldChange(idx, 'jobTitle', e.target.value)}
               placeholder="Job Title"
-              style={{ flex: 1, minWidth: 120 }}
+              className={styles.jobTitle}
             />
             <input
               type="text"
               value={w.company}
               onChange={e => handleFieldChange(idx, 'company', e.target.value)}
               placeholder="Company"
-              style={{ flex: 1, minWidth: 120 }}
+              className={styles.company}
             />
             <input
               type="text"
               value={w.date}
               onChange={e => handleFieldChange(idx, 'date', e.target.value)}
               placeholder="Date"
-              style={{ flex: 1, minWidth: 100 }}
+              className={styles.date}
             />
-            <button onClick={() => handleRemoveJob(idx)} style={{ color: 'red' }}>Delete Job</button>
+            <button onClick={() => handleRemoveJob(idx)} className={styles.deleteBtn}>Delete Job</button>
           </div>
-          <ul style={{ paddingLeft: 20 }}>
+          <ul className={styles.bulletList}>
             {w.bullets.map((b, bulletIdx) => (
-              <li key={bulletIdx} style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 4 }}>
+              <li key={bulletIdx} className={styles.bulletItem}>
                 <input
                   type="text"
                   value={b}
                   onChange={e => handleBulletChange(idx, bulletIdx, e.target.value)}
                   placeholder="Detail or achievement"
-                  style={{ flex: 1 }}
+                  className={styles.bulletInput}
                 />
-                <button onClick={() => handleRemoveBullet(idx, bulletIdx)} style={{ color: 'red' }}>Remove</button>
+                <button onClick={() => handleRemoveBullet(idx, bulletIdx)} className={styles.removeBulletBtn}>Remove</button>
               </li>
             ))}
           </ul>
-          <button onClick={() => handleAddBullet(idx)} style={{ marginTop: 4 }}>Add Bullet</button>
+          <button onClick={() => handleAddBullet(idx)} className={styles.addBulletBtn}>Add Bullet</button>
         </div>
       ))}
-      <button onClick={handleAddJob} style={{ marginTop: 8 }}>Add Job</button>
+      <button onClick={handleAddJob} className={styles.addBtn}>Add Job</button>
     </section>
   );
 }
